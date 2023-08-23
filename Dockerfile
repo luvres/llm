@@ -1,19 +1,27 @@
-FROM pytorch/pytorch:2.0.1-cuda11.7-cudnn8-runtime
+FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
 LABEL mantainer="Leonardo Loures <luvres@hotmail.com>"
 
-## References:
-# https://blog.ovhcloud.com/fine-tuning-llama-2-models-using-a-single-gpu-qlora-and-ai-notebooks/
-# https://github.com/artidoro/qlora/tree/main
-
 RUN \
-  apt-get update && apt-get install --yes --no-install-recommends git \
+  apt update && apt install --yes --no-install-recommends \
+      python3-pip git && \
   \
-  && pip install --no-cache-dir --upgrade pip \
-  && pip install --no-cache-dir \
-        git+https://github.com/huggingface/accelerate.git \
-        git+https://github.com/huggingface/transformers.git \
-        git+https://github.com/huggingface/peft.git \
-        git+https://github.com/lvwerra/trl.git \
-        bitsandbytes \
-        scipy \
-        datasets==2.13.1
+  rm -rf /var/lib/apt/lists/* && \
+  ln -s /usr/bin/python3 /usr/bin/python && \
+  \
+  pip3 --no-cache-dir install --upgrade pip && \
+  \
+  pip install --no-cache-dir \
+    --extra-index-url https://download.pytorch.org/whl/nightly/cu118 && \
+      torch torchvision torchaudio && \
+      # --pre 'torch>=2.1.0dev'
+  \
+  pip install --no-cache-dir \
+      git+https://github.com/huggingface/transformers.git \
+      git+https://github.com/huggingface/accelerate.git \
+      git+https://github.com/huggingface/peft.git \
+      git+https://github.com/lvwerra/trl.git \
+      bitsandbytes \
+      datasets \
+      loralib \
+      scipy \
+      openai
