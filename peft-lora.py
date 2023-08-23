@@ -1,14 +1,11 @@
 # 1) LoRA (Tokenizer Model)
 import torch
-print(torch.cuda.is_available())
-
-import os
-#os.environ["CUDA_VISIBLE_DEVICES"]="0"
-
-import torch
 import torch.nn as nn
 import bitsandbytes as bnb
 from transformers import AutoTokenizer, AutoModelForCausalLM
+import os
+#os.environ["CUDA_VISIBLE_DEVICES"]="0"
+print(torch.cuda.is_available())
 
 #pretrained_model = "/scratch/LLM/BLOOM/bloomz-3b"
 pretrained_model = "/scratch/LLM/BLOOM/bloomz-7b1"
