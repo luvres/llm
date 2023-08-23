@@ -1,5 +1,5 @@
-Instruct-Tuning and Fine-Tuning LLM: QLoRA, bitsandbytes
------
+# Instruct-Tuning and Fine-Tuning LLM: QLoRA, bitsandbytes
+
 ### Build container image
 ```
 apptainer build llm.sif llm.def
@@ -23,7 +23,7 @@ apptainer run --nv ${IMAGE} python -c "import torch;print(torch.cuda.is_availabl
 apptainer shell --nv ${IMAGE}
 ```
 
-# Download Bloomz
+## Download (Bloomz)[https://huggingface.co/bigscience/bloomz]
 
 ### bigscience/bloomz-3b (3B)
 ```
@@ -41,7 +41,7 @@ git lfs install
 git clone https://huggingface.co/bigscience/bloomz
 ```
 
-# Download [OpenLLaMA](https://github.com/openlm-research/open_llama)
+## Download [OpenLLaMA](https://github.com/openlm-research/open_llama)
 
 ### openlm-research/open_llama_7b_v2
 ```
