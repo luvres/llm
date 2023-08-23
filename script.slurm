@@ -10,4 +10,4 @@
 export APPTAINER_BIND="/scratch/$USER,/scratch/LLM"
 export CONTAINER_FILE="/opt/images/llm.sif"
 ###########
-apptainer run --nv ${CONTAINER_FILE} python -u script.py
+apptainer run --nv ${CONTAINER_FILE} python -u peft-lora.py.py
