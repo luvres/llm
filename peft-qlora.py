@@ -1,43 +1,29 @@
-# 1) LoRA (Tokenizer Model)
+# 1) QLoRA (Tokenizer Model)
 import torch
-print(torch.cuda.is_available())
-
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 import os
 #os.environ["CUDA_VISIBLE_DEVICES"]="0"
-
-import torch
-import torch.nn as nn
-import bitsandbytes as bnb
-from transformers import AutoTokenizer, AutoModelForCausalLM
+print(torch.cuda.is_available())
 
 #pretrained_model = "/scratch/LLM/BLOOM/bloomz-3b"
 pretrained_model = "/scratch/LLM/BLOOM/bloomz-7b1"
 
-model = AutoModelForCausalLM.from_pretrained(
-    pretrained_model,
-    torch_dtype=torch.float16,
-    load_in_8bit=True,
-    device_map='auto',
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_use_double_quant=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype=torch.bfloat16
 )
 
 tokenizer = AutoTokenizer.from_pretrained(pretrained_model)
+model = AutoModelForCausalLM.from_pretrained(pretrained_model, quantization_config=bnb_config, device_map="auto")
+
+from peft import prepare_model_for_kbit_training
+
+model.gradient_checkpointing_enable()
+model = prepare_model_for_kbit_training(model)
 
 print(model)
-
-
-# 2) Freezing the original wheigths 
-for param in model.parameters():
-  param.requires_grad = False  # freeze the model - train adapters later
-  if param.ndim == 1:
-    # cast the small parameters (e.g. layernorm) to fp32 for stability
-    param.data = param.data.to(torch.float32)
-
-model.gradient_checkpointing_enable()  # reduce number of stored activations
-model.enable_input_require_grads()
-
-class CastOutputToFloat(nn.Sequential):
-  def forward(self, x): return super().forward(x).to(torch.float32)
-model.lm_head = CastOutputToFloat(model.lm_head)
 
 
 # 3) Setting up the LoRA Adapters
