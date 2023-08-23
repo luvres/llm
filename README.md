@@ -23,7 +23,7 @@ apptainer run --nv ${IMAGE} python -c "import torch;print(torch.cuda.is_availabl
 apptainer shell --nv ${IMAGE}
 ```
 
-## Download (Bloomz)[https://huggingface.co/bigscience/bloomz]
+## Download [Bloomz](https://huggingface.co/bigscience/bloomz)
 
 ### bigscience/bloomz-3b (3B)
 ```
