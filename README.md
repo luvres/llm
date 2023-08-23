@@ -1,4 +1,4 @@
-# Instruct-Tuning and Fine-Tuning LLM: QLoRA, bitsandbytes
+# Instruct-Tuning and Fine-Tuning LLM
 
 ### Build container image
 ```
