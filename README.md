@@ -25,12 +25,12 @@ apptainer shell --nv ${IMAGE}
 
 ## Download [Bloomz](https://huggingface.co/bigscience/bloomz)
 
-### bigscience/bloomz-3b (3B)
+#### bigscience/bloomz-3b (3B)
 ```
 git lfs install
 git clone https://huggingface.co/bigscience/bloomz-3b
 ```
-### bigscience/bloomz-7b1 (7.1B)
+#### bigscience/bloomz-7b1 (7.1B)
 ```
 git lfs install
 git clone https://huggingface.co/bigscience/bloomz-7b1
@@ -43,7 +43,7 @@ git clone https://huggingface.co/bigscience/bloomz
 
 ## Download [OpenLLaMA](https://github.com/openlm-research/open_llama)
 
-### openlm-research/open_llama_7b_v2
+#### openlm-research/open_llama_7b_v2
 ```
 git lfs install
 git clone https://huggingface.co/openlm-research/open_llama_7b_v2
