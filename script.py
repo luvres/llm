@@ -12,7 +12,8 @@ import torch.nn as nn
 import bitsandbytes as bnb
 from transformers import AutoTokenizer, AutoConfig, AutoModelForCausalLM
 
-pretrained_model = "/scratch/LLM/BLOOM/bloomz-3b"
+#pretrained_model = "/scratch/LLM/BLOOM/bloomz-3b"
+pretrained_model = "/scratch/LLM/BLOOM/bloomz-7b1"
 
 model = AutoModelForCausalLM.from_pretrained(
     pretrained_model,
