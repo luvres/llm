@@ -1,4 +1,7 @@
 # 1) LoRA (Tokenizer Model)
+import torch
+print(torch.cuda.is_available())
+
 import os
 #os.environ["CUDA_VISIBLE_DEVICES"]="0"
 import torch
