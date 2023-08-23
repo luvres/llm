@@ -129,6 +129,26 @@ def generate_prompt(product: str, description: str, marketing_email: str) -> str
 mapped_dataset = dataset.map(lambda samples: tokenizer(generate_prompt(samples['product'], samples['description'], samples['marketing_email'])))
 
 
+### If you're running into CUDA memory issues - please modify both the per_device_train_batch_size to be lower, and also reduce r in your LoRAConfig.
+trainer = transformers.Trainer(
+    model=model,
+    train_dataset=mapped_dataset["train"],
+    args=transformers.TrainingArguments(
+        per_device_train_batch_size=6,
+        gradient_accumulation_steps=4,
+        warmup_steps=100,
+        max_steps=100,
+        learning_rate=1e-3,
+        fp16=True,
+        logging_steps=1,
+        output_dir='outputs'
+    ),
+    data_collator=transformers.DataCollatorForLanguageModeling(tokenizer, mlm=False)
+)
+model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
+trainer.train()
+
+
 ### Share adapters on the 🤗 Hub
 HUGGING_FACE_USER_NAME = "YOUR USERNAME HERE"
 
