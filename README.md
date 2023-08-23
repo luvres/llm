@@ -35,7 +35,7 @@ git clone https://huggingface.co/bigscience/bloomz-3b
 git lfs install
 git clone https://huggingface.co/bigscience/bloomz-7b1
 ```
-### bigscience/bloomz (176B)
+bigscience/bloomz (176B)
 ```
 git lfs install
 git clone https://huggingface.co/bigscience/bloomz
