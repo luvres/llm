@@ -90,33 +90,34 @@ print(dataset)
 print(dataset['train'][0])
 
 
+##################################################################
 # We want to put our data in the form:
-# -----------
-### INSTRUCTION
-Below is a product and description, please write a marketing email for this product.
-
-### Product
-PRODUCT NAME
-
-### Description:
-DESCRIPTION
-
-### Marketing Email:
-OUR EMAIL HERE
-# -----------
-
+# 
+# ### INSTRUCTION
+# Below is a product and description, please write a marketing email for this product.
+#
+# ### Product
+# PRODUCT NAME
+#
+# ### Description:
+# DESCRIPTION
+#
+# ### Marketing Email:
+# OUR EMAIL HERE
+#
+#################################
 # Say you were fine-tuning a Natural Language to SQL task.
 # In that case - the data should be moved into the following format:
-# -----------
-### INSTRUCTION
-Please convert the following context into an SQL query.
-
-### CONTEXT
-How many people work at my company?
-
-### SQL
-SELECT COUNT(*) FROM employees
-# -----------
+#
+# ### INSTRUCTION
+# Please convert the following context into an SQL query.
+#
+# ### CONTEXT
+# How many people work at my company?
+#
+# ### SQL
+# SELECT COUNT(*) FROM employees
+##################################################################
 
 
 ### Because we're using BLOOMZ (which is an instruct-tuned base model), we should see better results providing the instruction - though that is not necessary.
