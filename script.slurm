@@ -14,8 +14,6 @@
 export APPTAINER_BIND="/scratch/$USER,/scratch/LLM"
 export CONTAINER_FILE="/opt/images/llm.sif"
 ###########
-#
-# qLoRA
 apptainer run --nv ${CONTAINER_FILE} python -u adapters.py \
 --model_name "bloomz-7b1" \
 --peft_method "qlora" \
