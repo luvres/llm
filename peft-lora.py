@@ -5,27 +5,19 @@ import bitsandbytes as bnb
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import os
 #os.environ["CUDA_VISIBLE_DEVICES"]="0"
-print(f'CUDA Avaliable: {torch.cuda.is_available()}')
+print(torch.cuda.is_available())
 
-# Environment variable
-USER = os.environ['USER']
-#
-# Model name
-#model_name = "bloomz-3b"
-model_name = "bloomz-7b1"
-############
-#
-model_id = "/scratch/LLM/BLOOM/{model_name}"
-model_pretrained =  f"/scratch/{USER}/{model_name}-adapter-qlora"
+#pretrained_model = "/scratch/LLM/BLOOM/bloomz-3b"
+pretrained_model = "/scratch/LLM/BLOOM/bloomz-7b1"
 
 model = AutoModelForCausalLM.from_pretrained(
-    model_id,
+    pretrained_model,
     torch_dtype=torch.float16,
     load_in_8bit=True,
     device_map='auto',
 )
 
-tokenizer = AutoTokenizer.from_pretrained(model_id)
+tokenizer = AutoTokenizer.from_pretrained(pretrained_model)
 
 print(model)
 
@@ -73,7 +65,5 @@ config = LoraConfig(
 )
 
 model = get_peft_model(model, config)
-
 print_trainable_parameters(model)
 
-model.save_pretrained(model_pretrained)
