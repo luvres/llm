@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import bitsandbytes as bnb
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
-from peft import LoraConfig, get_peft_model prepare_model_for_kbit_training
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 
 #os.environ["CUDA_VISIBLE_DEVICES"]="0"
 print(f'CUDA Avaliable: {torch.cuda.is_available()}')
