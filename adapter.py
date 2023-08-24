@@ -30,8 +30,11 @@ print(f'{model_subname}')
 ##    print('Missing input image')
 ##    returnpy
 
-#model_id = "/scratch/LLM/BLOOM/{model_name}"
-#model_pretrained =  f"/scratch/{USER}/adapters/{model_name}-{model_subname}"
+model_id = "/scratch/LLM/BLOOM/{model_name}"
+model_pretrained =  f"/scratch/{USER}/adapters/{model_name}-{model_subname}"
+
+print(f'{model_id}')
+print(f'{model_pretrained}')
 
 #bnb_config = BitsAndBytesConfig(
 #    load_in_4bit=True,
