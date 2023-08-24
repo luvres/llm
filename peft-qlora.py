@@ -1,12 +1,20 @@
-# 1) QLoRA (Tokenizer Model)
+# 1) qLoRA (Tokenizer Model)
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 import os
 #os.environ["CUDA_VISIBLE_DEVICES"]="0"
-print(torch.cuda.is_available())
+print(f'CUDA Avaliable: {torch.cuda.is_available()}')
 
-#pretrained_model = "/scratch/LLM/BLOOM/bloomz-3b"
-pretrained_model = "/scratch/LLM/BLOOM/bloomz-7b1"
+# Environment variable
+USER = os.environ['USER']
+
+# Model name
+#model_name = "bloomz-3b"
+model_name = "bloomz-7b1"
+model_subname = "qlora"
+
+model_id = "/scratch/LLM/BLOOM/{model_name}"
+model_pretrained =  f"/scratch/{USER}/adapters/{model_name}-{model_subname}"
 
 bnb_config = BitsAndBytesConfig(
     load_in_4bit=True,
@@ -15,8 +23,8 @@ bnb_config = BitsAndBytesConfig(
     bnb_4bit_compute_dtype=torch.bfloat16
 )
 
-tokenizer = AutoTokenizer.from_pretrained(pretrained_model)
-model = AutoModelForCausalLM.from_pretrained(pretrained_model, quantization_config=bnb_config, device_map="auto")
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+model = AutoModelForCausalLM.from_pretrained(model_id, quantization_config=bnb_config, device_map="auto")
 
 from peft import prepare_model_for_kbit_training
 
@@ -54,5 +62,7 @@ config = LoraConfig(
 )
 
 model = get_peft_model(model, config)
+
 print_trainable_parameters(model)
 
+model.save_pretrained(model_pretrained)

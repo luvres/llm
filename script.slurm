@@ -14,4 +14,8 @@
 export APPTAINER_BIND="/scratch/$USER,/scratch/LLM"
 export CONTAINER_FILE="/opt/images/llm.sif"
 ###########
-apptainer run --nv ${CONTAINER_FILE} python -u peft-lora.py
+#apptainer run --nv ${CONTAINER_FILE} python -u peft-lora.py
+
+apptainer run --nv ${CONTAINER_FILE} python -u adapter.py \
+--model_name "bloomz-7b1" \
+--peft_method "qlora"
