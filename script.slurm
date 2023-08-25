@@ -18,15 +18,28 @@ export CONTAINER_FILE="/opt/images/llm.sif"
 # Options:
 # --model_name, example: 'bloomz-3b'
 # --peft_method, choices: {'lora','qlora'}
-# --tuning, choices: {'instruction','fine'}
+# --tuning, choices: {'instruction','adapter'}
 #
-apptainer run --nv ${CONTAINER_FILE} python -u adapters.py \
---model_name "bloomz-7b1" \
+apptainer run --nv ${CONTAINER_FILE} python -u main.py \
+--model_name 'bloomz-7b1' \
 --peft_method "lora" \
---tuning 'fine' \
+--tuning 'adapter' \
+--inference "Quais são as estações do ano?" \
 --lora_r 16 \
 --lora_alpha 32 \
 --lora_target_modules 'query_key_value' \
 --lora_dropout 0.05  \
 --lora_bias 'none' \
---lora_task_type 'CAUSAL_LM'
+--lora_task_type 'CAUSAL_LM' \
+--per_device_train_batch_size 6 \
+--gradient_accumulation_steps 4 \
+--warmup_steps 100 \
+--max_steps 100 \
+--learning_rate 1e-4
+
+
+
+
+
+
+

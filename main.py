@@ -19,24 +19,38 @@ USER = os.environ['USER']
 parser = argparse.ArgumentParser(description="Prepared Adapter")
 parser.add_argument('--model_name', type=str, help="Name of the model, example: 'bloomz-3b'", required=True)
 parser.add_argument('--peft_method', type=str, choices={'lora','qlora'}, default='qlora')
-parser.add_argument('--tuning', type=str, choices={'instruction','fine'}, default='fine')
+parser.add_argument('--tuning', type=str, choices={'instruction','adapter'}, default='adapter')
+parser.add_argument('--inference', type=str, default="Quais são as estações do ano?")
 parser.add_argument('--lora_r', type=int, default=16)
 parser.add_argument('--lora_alpha', type=int, default=32)
-parser.add_argument('--lora_target_modules', type=str, default='query_key_value') 
-parser.add_argument('--lora_dropout', type=float, default=0.05) # 
+parser.add_argument('--lora_target_modules', type=str, default='query_key_value')
+parser.add_argument('--lora_dropout', type=float, default=0.05)
 parser.add_argument('--lora_bias', type=str, choices={'all','none'}, required='none')
 parser.add_argument('--lora_task_type', type=str, default='CAUSAL_LM')
+parser.add_argument('--per_device_train_batch_size', type=int, default=6)
+parser.add_argument('--gradient_accumulation_steps', type=int, default=4)
+parser.add_argument('--warmup_steps', type=int, default=100)
+parser.add_argument('--max_steps', type=int, default=100)
+parser.add_argument('--learning_rate', type=float, default=1e-4) # 
 args = parser.parse_args()
 
 model_name = args.model_name
 peft_method = args.peft_method
 tuning = args.tuning
+inference = args.inference
+# LoraConfig
 lora_r = args.lora_r
 lora_alpha = args.lora_alpha
 lora_target_modules = args.lora_target_modules
 lora_dropout = args.lora_dropout
 lora_bias = args.lora_bias
 lora_task_type = args.lora_task_type
+# Train adapter-tuning
+per_device_train_batch_size = args.per_device_train_batch_size
+gradient_accumulation_steps = args.gradient_accumulation_steps
+warmup_steps = args.warmup_steps
+max_steps = args.max_steps
+learning_rate = args.learning_rate
 
 model_id = f"/scratch/LLM/BLOOM/{model_name}"
 model_pretrained =  f"/scratch/{USER}/adapters/{model_name}-{peft_method}"
@@ -139,17 +153,17 @@ dataset_reduced = DatasetDict({
 
 mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(samples['chip2']), batched=True)
 
-# Train Fine-tuning
-if tuning == 'fine':
+# Unsupervised fine-tuning
+if tuning == 'adapter':
     trainer = Trainer(
         model=model,
         train_dataset=mapped_dataset["train"],
         args=TrainingArguments(
-            per_device_train_batch_size=6,
-            gradient_accumulation_steps=4,
-            warmup_steps=30,
-            max_steps=30,
-            learning_rate=1e-3,
+            per_device_train_batch_size=per_device_train_batch_size,
+            gradient_accumulation_steps=gradient_accumulation_steps,
+            warmup_steps=warmup_steps,
+            max_steps=max_steps,
+            learning_rate=learning_rate,
             fp16=True,
             logging_steps=1,
             output_dir='outputs'
@@ -162,13 +176,12 @@ if tuning == 'fine':
 # Train instruction-tuning
 #elif peft_method == 'instruction':
 
-
 model.save_pretrained(model_pretrained)
 
 
 # Inference
 def make_inference():
-  batch = tokenizer(f"Quais são as estações do ano?.", return_tensors='pt')
+  batch = tokenizer(inference, return_tensors='pt')
   with torch.cuda.amp.autocast():
     output_tokens = model.generate(**batch, max_new_tokens=50)
   print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))

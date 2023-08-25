@@ -53,5 +53,3 @@ def make_inference():
 make_inference()
 
 
-
-
