@@ -7,7 +7,7 @@
 #
 #SBATCH --constraint=GPU             # -C feature
 #SBATCH --nodes=1                    # -N | node count, 1 nodes reserved
-#SBATCH --time=2-00:00:00            # -t | total run time limit (d-HH:MM:SS)
+#SBATCH --time=7-00:00:00            # -t | total run time limit (d-HH:MM:SS)
 #SBATCH --output=./logs/slurm.log    # Standard output and error log
 #SBATCH --error=./logs/slurm.log
 ###########
@@ -38,6 +38,6 @@ apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 \
 --per_device_train_batch_size 12 \
 --gradient_accumulation_steps 4 \
---max_steps 100000 \
+--max_steps 10000 \
 --learning_rate 1e-4
 
