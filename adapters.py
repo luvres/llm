@@ -76,7 +76,7 @@ if args.peft_method == 'qlora':
     model.gradient_checkpointing_enable()
     model = prepare_model_for_kbit_training(model)
     model = get_peft_model(model, config)
-    model.save_pretrained(model_pretrained)
+#    model.save_pretrained(model_pretrained)
 # LoRA
 elif args.peft_method == 'lora':
     # Freezing the original wheigths 
@@ -94,7 +94,7 @@ elif args.peft_method == 'lora':
     model.lm_head = CastOutputToFloat(model.lm_head)
 
     model = get_peft_model(model, config)
-    model.save_pretrained(model_pretrained)
+#    model.save_pretrained(model_pretrained)
 
 
 print(model)
