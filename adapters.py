@@ -5,6 +5,7 @@ import torch.nn as nn
 #import bitsandbytes as bnb
 from transformers import AutoModelForCausalLM, BitsAndBytesConfig #, AutoTokenizer
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from datasets import load_dataset, Dataset, DatasetDict
 
 #os.environ["CUDA_VISIBLE_DEVICES"]="0"
 print(f'CUDA Avaliable: {torch.cuda.is_available()}')
@@ -117,9 +118,6 @@ def print_trainable_parameters(model):
 print_trainable_parameters(model)
 
 
-
-from datasets import load_dataset, Dataset, DatasetDict
-
 # Load dataset
 dataset_name = "paulofinardi/OIG_small_chip2_portuguese_brasil"
 dataset = load_dataset(dataset_name)
@@ -141,6 +139,7 @@ def generate_prompt(user: str, chip2: str) -> str:
 mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(generate_prompt(samples['user'], samples['chip2'])))
 
 
+# Train
 trainer = transformers.Trainer(
     model=model,
     train_dataset=mapped_dataset["train"],
