@@ -137,13 +137,19 @@ print_trainable_parameters(model)
 
 
 # Load dataset
+#DatasetDict({
+#    train: Dataset({
+#        features: ['user', 'chip2'],
+#        num_rows: 210289
+#    })
+#})
 dataset_name = "paulofinardi/OIG_small_chip2_portuguese_brasil"
 dataset = load_dataset(dataset_name)
 
 dataset_reduced = DatasetDict({
     "train": Dataset.from_dict({
-        "user": dataset["train"]["user"][:1000],
-        "chip2": dataset["train"]["chip2"][:1000]
+        "user": dataset["train"]["user"][:10000],
+        "chip2": dataset["train"]["chip2"][:10000]
     })
 })
 
