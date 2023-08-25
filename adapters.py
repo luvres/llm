@@ -68,7 +68,7 @@ config = LoraConfig(
     task_type=lora_task_type
 )
 
-#tokenizer = AutoTokenizer.from_pretrained(model_id)
+tokenizer = AutoTokenizer.from_pretrained(model_id)
 
 # qLoRA
 if args.peft_method == 'qlora':
@@ -115,4 +115,48 @@ def print_trainable_parameters(model):
     )
 
 print_trainable_parameters(model)
+
+
+
+from datasets import load_dataset, Dataset, DatasetDict
+
+# Load dataset
+dataset_name = "paulofinardi/OIG_small_chip2_portuguese_brasil"
+dataset = load_dataset(dataset_name)
+
+dataset_reduced = DatasetDict({
+    "train": Dataset.from_dict({
+        "user": dataset["train"]["user"][:15],
+        "chip2": dataset["train"]["chip2"][:15]
+    })
+})
+
+dataset_reduced = DatasetDict(subset_dataset)
+
+
+def generate_prompt(user: str, chip2: str) -> str:
+  prompt = f"### INSTRUCTION\nO primeiro treinamento.\n\n### User:\n{user}\n### Chip2:\n{chip2}"
+  return prompt
+
+mapped_dataset = dataset.map(lambda samples: tokenizer(generate_prompt(samples['user'], samples['chip2'])))
+
+
+trainer = transformers.Trainer(
+    model=model,
+    train_dataset=mapped_dataset["train"],
+    args=transformers.TrainingArguments(
+        per_device_train_batch_size=6,
+        gradient_accumulation_steps=4,
+        warmup_steps=100,
+        max_steps=100,
+        learning_rate=1e-3,
+        fp16=True,
+        logging_steps=1,
+        output_dir='outputs'
+    ),
+    data_collator=transformers.DataCollatorForLanguageModeling(tokenizer, mlm=False)
+)
+model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
+trainer.train()
+
 

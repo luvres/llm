@@ -1,4 +1,4 @@
-# Instruct-Tuning and Fine-Tuning LLM
+# Infrastructure Design for AI Consulting
 
 ### Build container image
 ```
