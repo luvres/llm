@@ -21,6 +21,7 @@ parser.add_argument('--model_name', type=str, help="Name of the model, example: 
 parser.add_argument('--peft_method', type=str, choices={'lora','qlora'}, default='qlora')
 parser.add_argument('--tuning', type=str, choices={'instruction','adapter'}, default='adapter')
 parser.add_argument('--inference', type=str, default="Quais são as estações do ano?")
+parser.add_argument('--max_new_tokens', type=int, default=50)
 parser.add_argument('--lora_r', type=int, default=16)
 parser.add_argument('--lora_alpha', type=int, default=32)
 parser.add_argument('--lora_target_modules', type=str, default='query_key_value')
@@ -38,6 +39,7 @@ model_name = args.model_name
 peft_method = args.peft_method
 tuning = args.tuning
 inference = args.inference
+max_new_tokens = args.max_new_tokens
 # LoraConfig
 lora_r = args.lora_r
 lora_alpha = args.lora_alpha
@@ -183,7 +185,7 @@ model.save_pretrained(model_pretrained)
 def make_inference():
   batch = tokenizer(inference, return_tensors='pt')
   with torch.cuda.amp.autocast():
-    output_tokens = model.generate(**batch, max_new_tokens=50)
+    output_tokens = model.generate(**batch, max_new_tokens=max_new_tokens)
   print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))
 
 make_inference()
