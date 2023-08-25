@@ -142,8 +142,8 @@ dataset = load_dataset(dataset_name)
 
 dataset_reduced = DatasetDict({
     "train": Dataset.from_dict({
-        "user": dataset["train"]["user"][:15],
-        "chip2": dataset["train"]["chip2"][:15]
+        "user": dataset["train"]["user"][:1000],
+        "chip2": dataset["train"]["chip2"][:1000]
     })
 })
 
