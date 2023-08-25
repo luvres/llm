@@ -138,7 +138,7 @@ def generate_prompt(user: str, chip2: str) -> str:
   prompt = f"### INSTRUCTION\nO primeiro treinamento.\n\n### User:\n{user}\n### Chip2:\n{chip2}"
   return prompt
 
-mapped_dataset = dataset.map(lambda samples: tokenizer(generate_prompt(samples['user'], samples['chip2'])))
+mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(generate_prompt(samples['user'], samples['chip2'])))
 
 
 trainer = transformers.Trainer(
