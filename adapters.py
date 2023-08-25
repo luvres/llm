@@ -19,6 +19,7 @@ USER = os.environ['USER']
 parser = argparse.ArgumentParser(description="Prepared Adapter")
 parser.add_argument('--model_name', type=str, help="Name of the model, example: 'bloomz-3b'", required=True)
 parser.add_argument('--peft_method', type=str, choices={'lora','qlora'}, default='qlora')
+parser.add_argument('--tuning', type=str, choices={'instruction','fine'}, default='fine')
 parser.add_argument('--lora_r', type=int, default=16)
 parser.add_argument('--lora_alpha', type=int, default=32)
 parser.add_argument('--lora_target_modules', type=str, default='query_key_value') 
@@ -132,7 +133,6 @@ dataset_reduced = DatasetDict({
     })
 })
 
-
 def generate_prompt(user: str, chip2: str) -> str:
   prompt = f"### INSTRUCTION\nO primeiro treinamento.\n\n### User:\n{user}\n### Chip2:\n{chip2}"
   return prompt
@@ -140,23 +140,24 @@ def generate_prompt(user: str, chip2: str) -> str:
 mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(generate_prompt(samples['user'], samples['chip2'])))
 
 
-# Train
-trainer = Trainer(
-    model=model,
-    train_dataset=mapped_dataset["train"],
-    args=TrainingArguments(
-        per_device_train_batch_size=6,
-        gradient_accumulation_steps=4,
-        warmup_steps=100,
-        max_steps=100,
-        learning_rate=1e-3,
-        fp16=True,
-        logging_steps=1,
-        output_dir='outputs'
-    ),
-    data_collator=DataCollatorForLanguageModeling(tokenizer, mlm=False)
-)
-model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
-trainer.train()
+# Train Fine-tuning
+if args.tuning == 'fine':
+    trainer = Trainer(
+        model=model,
+        train_dataset=mapped_dataset["train"],
+        args=TrainingArguments(
+            per_device_train_batch_size=6,
+            gradient_accumulation_steps=4,
+            warmup_steps=100,
+            max_steps=100,
+            learning_rate=1e-3,
+            fp16=True,
+            logging_steps=1,
+            output_dir='outputs'
+        ),
+        data_collator=DataCollatorForLanguageModeling(tokenizer, mlm=False)
+    )
+    model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
+    trainer.train()
 
 

@@ -14,9 +14,16 @@
 export APPTAINER_BIND="/scratch/$USER,/scratch/LLM"
 export CONTAINER_FILE="/opt/images/llm.sif"
 ###########
+#
+# Options:
+# --model_name, example: 'bloomz-3b'
+# --peft_method, choices: {'lora','qlora'}
+# --tuning, choices: {'instruction','fine'}
+#
 apptainer run --nv ${CONTAINER_FILE} python -u adapters.py \
 --model_name "bloomz-7b1" \
---peft_method "qlora" \
+--peft_method "lora" \
+--tuning 'fine' \
 --lora_r 16 \
 --lora_alpha 32 \
 --lora_target_modules 'query_key_value' \
