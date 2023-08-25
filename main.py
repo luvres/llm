@@ -175,7 +175,7 @@ if tuning == 'adapter':
     model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
     trainer.train()
 #    trainer.save_model(model_pretrained)
-# Train instruction-tuning
+# Supervised fine-tuning
 #elif peft_method == 'instruction':
 
 model.save_pretrained(model_pretrained)

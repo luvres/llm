@@ -13,11 +13,17 @@ USER = os.environ['USER']
 parser = argparse.ArgumentParser(description="Prepared Adapter")
 parser.add_argument('--model_name', type=str, help="Name of the model, example: 'bloomz-7b1'", required=True)
 parser.add_argument('--peft_method', type=str, choices={'lora','qlora'}, default='qlora')
-#parser.add_argument('--tuning', type=str, choices={'instruction','fine'}, default='fine')
+parser.add_argument('--inference', type=str, default="Quais são as estações do ano?")
+parser.add_argument('--max_new_tokens', type=int, default=50)
 args = parser.parse_args()
 
 model_name = args.model_name
 peft_method = args.peft_method
+inference = args.inference
+max_new_tokens = args.max_new_tokens
+
+#export CONTAINER_FILE="/opt/images/llm.sif"
+#export APPTAINER_BIND="/scratch/$USER,/scratch/LLM"
 
 peft_model_id = f"/scratch/{USER}/adapters/{model_name}-{peft_method}"
 #peft_model_id = f"/scratch/{USER}/adapters/bloomz-7b1-lora"
@@ -39,7 +45,7 @@ model = PeftModel.from_pretrained(model, peft_model_id)
 # Inference
 #def make_inference(user: str) -> str:
 def make_inference():
-  batch = tokenizer(f"Quais são as estações do ano?.", return_tensors='pt')
+  batch = tokenizer(inference, return_tensors='pt')
   with torch.cuda.amp.autocast():
     output_tokens = model.generate(**batch, max_new_tokens=50)
     
@@ -52,4 +58,7 @@ def make_inference():
 #make_inference(user_here)
 make_inference()
 
-
+apptainer run --nv ${CONTAINER_FILE} python -u inference.py \
+--model_name 'bloomz-7b1' --peft_method 'lora' \
+--inference "Qual o sentido da vida?" \
+--max_new_tokens 50
