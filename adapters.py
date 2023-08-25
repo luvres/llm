@@ -3,7 +3,7 @@ import argparse
 import torch
 import torch.nn as nn
 #import bitsandbytes as bnb
-from transformers import AutoModelForCausalLM, BitsAndBytesConfig #, AutoTokenizer
+from transformers import AutoModelForCausalLM, BitsAndBytesConfig, AutoTokenizer
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from datasets import load_dataset, Dataset, DatasetDict
 
