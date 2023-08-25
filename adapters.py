@@ -26,11 +26,11 @@ parser.add_argument('--lora_target_modules', type=str, default='query_key_value'
 parser.add_argument('--lora_dropout', type=float, default=0.05) # 
 parser.add_argument('--lora_bias', type=str, choices={'all','none'}, required='none')
 parser.add_argument('--lora_task_type', type=str, default='CAUSAL_LM')
-
 args = parser.parse_args()
 
 model_name = args.model_name
-model_subname = args.peft_method
+peft_method = args.peft_method
+tuning = args.tuning
 lora_r = args.lora_r
 lora_alpha = args.lora_alpha
 lora_target_modules = args.lora_target_modules
@@ -39,10 +39,10 @@ lora_bias = args.lora_bias
 lora_task_type = args.lora_task_type
 
 model_id = f"/scratch/LLM/BLOOM/{model_name}"
-model_pretrained =  f"/scratch/{USER}/adapters/{model_name}-{model_subname}"
+model_pretrained =  f"/scratch/{USER}/adapters/{model_name}-{peft_method}"
 
 # qLoRA
-if args.peft_method == 'qlora':
+if peft_method == 'qlora':
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_use_double_quant=True,
@@ -55,7 +55,7 @@ if args.peft_method == 'qlora':
         device_map="auto"
     )
 # LoRA
-elif args.peft_method == 'lora':
+elif peft_method == 'lora':
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
         torch_dtype=torch.float16,
@@ -76,13 +76,12 @@ config = LoraConfig(
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 
 # qLoRA
-if args.peft_method == 'qlora':
+if peft_method == 'qlora':
     model.gradient_checkpointing_enable()
     model = prepare_model_for_kbit_training(model)
     model = get_peft_model(model, config)
-#    model.save_pretrained(model_pretrained)
 # LoRA
-elif args.peft_method == 'lora':
+elif peft_method == 'lora':
     # Freezing the original wheigths 
     for param in model.parameters():
       param.requires_grad = False  # freeze the model - train adapters later
@@ -98,7 +97,6 @@ elif args.peft_method == 'lora':
     model.lm_head = CastOutputToFloat(model.lm_head)
 
     model = get_peft_model(model, config)
-#    model.save_pretrained(model_pretrained)
 
 
 print(model)
@@ -141,7 +139,7 @@ mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(generate_prompt(s
 
 
 # Train Fine-tuning
-if args.tuning == 'fine':
+if tuning == 'fine':
     trainer = Trainer(
         model=model,
         train_dataset=mapped_dataset["train"],
@@ -159,10 +157,11 @@ if args.tuning == 'fine':
     )
     model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
     trainer.train()
+    trainer.save_model(model_pretrained)
 # Train instruction-tuning
-#elif args.peft_method == 'instruction':
+#elif peft_method == 'instruction':
 
 
-model.save_pretrained(model_pretrained)
+#model.save_pretrained(model_pretrained)
 
 
