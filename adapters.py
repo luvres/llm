@@ -3,7 +3,10 @@ import argparse
 import torch
 import torch.nn as nn
 #import bitsandbytes as bnb
-from transformers import AutoModelForCausalLM, BitsAndBytesConfig, AutoTokenizer
+from transformers import (
+    AutoModelForCausalLM, BitsAndBytesConfig, AutoTokenizer, 
+    Trainer, TrainingArguments, DataCollatorForLanguageModeling
+)
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from datasets import load_dataset, Dataset, DatasetDict
 
@@ -138,10 +141,10 @@ mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(generate_prompt(s
 
 
 # Train
-trainer = transformers.Trainer(
+trainer = Trainer(
     model=model,
     train_dataset=mapped_dataset["train"],
-    args=transformers.TrainingArguments(
+    args=TrainingArguments(
         per_device_train_batch_size=6,
         gradient_accumulation_steps=4,
         warmup_steps=100,
@@ -151,7 +154,7 @@ trainer = transformers.Trainer(
         logging_steps=1,
         output_dir='outputs'
     ),
-    data_collator=transformers.DataCollatorForLanguageModeling(tokenizer, mlm=False)
+    data_collator=DataCollatorForLanguageModeling(tokenizer, mlm=False)
 )
 model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
 trainer.train()
