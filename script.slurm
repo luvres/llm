@@ -26,7 +26,7 @@ apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 \
 --tuning 'adapter' \
 \
---inference "Como é feita a cor amarela?" \
+--inference "Qual o sentido da vida?" \
 --max_new_tokens 50 \
 \
 --lora_r 16 \
