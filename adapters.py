@@ -129,8 +129,6 @@ dataset_reduced = DatasetDict({
     })
 })
 
-dataset_reduced = DatasetDict(subset_dataset)
-
 
 def generate_prompt(user: str, chip2: str) -> str:
   prompt = f"### INSTRUCTION\nO primeiro treinamento.\n\n### User:\n{user}\n### Chip2:\n{chip2}"
