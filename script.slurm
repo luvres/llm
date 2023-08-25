@@ -36,7 +36,7 @@ apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 --lora_bias 'none' \
 --lora_task_type 'CAUSAL_LM' \
 \
---per_device_train_batch_size 12 \
+--per_device_train_batch_size 6 \
 --gradient_accumulation_steps 4 \
 --max_steps 10000 \
 --learning_rate 1e-4
