@@ -131,12 +131,13 @@ dataset_reduced = DatasetDict({
     })
 })
 
-def generate_prompt(user: str, chip2: str) -> str:
-  prompt = f"### INSTRUCTION\nO primeiro treinamento.\n\n### User:\n{user}\n### Chip2:\n{chip2}"
-  return prompt
+#def generate_prompt(user: str, chip2: str) -> str:
+#  prompt = f"### INSTRUCTION\nO primeiro treinamento.\n\n### User:\n{user}\n### Chip2:\n{chip2}"
+#  return prompt
 
-mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(generate_prompt(samples['user'], samples['chip2'])))
+#mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(generate_prompt(samples['user'], samples['chip2'])))
 
+mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(samples['chip2']), batched=True)
 
 # Train Fine-tuning
 if tuning == 'fine':
@@ -146,8 +147,8 @@ if tuning == 'fine':
         args=TrainingArguments(
             per_device_train_batch_size=6,
             gradient_accumulation_steps=4,
-            warmup_steps=100,
-            max_steps=100,
+            warmup_steps=30,
+            max_steps=30,
             learning_rate=1e-3,
             fp16=True,
             logging_steps=1,
@@ -157,11 +158,20 @@ if tuning == 'fine':
     )
     model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
     trainer.train()
-    trainer.save_model(model_pretrained)
+#    trainer.save_model(model_pretrained)
 # Train instruction-tuning
 #elif peft_method == 'instruction':
 
 
-#model.save_pretrained(model_pretrained)
+model.save_pretrained(model_pretrained)
 
+
+# Inference
+def make_inference():
+  batch = tokenizer(f"Quais são as estações do ano?.", return_tensors='pt')
+  with torch.cuda.amp.autocast():
+    output_tokens = model.generate(**batch, max_new_tokens=50)
+  print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))
+
+make_inference()
 
