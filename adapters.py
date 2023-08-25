@@ -35,7 +35,7 @@ lora_bias = args.lora_bias
 lora_task_type = args.lora_task_type
 
 model_id = f"/scratch/LLM/BLOOM/{model_name}"
-model_pretrained =  f"/scratch/{USER}/adapters/{model_name}-{model_subname}"
+#model_pretrained =  f"/scratch/{USER}/adapters/{model_name}-{model_subname}"
 
 # qLoRA
 if args.peft_method == 'qlora':
