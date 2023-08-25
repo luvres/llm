@@ -27,17 +27,17 @@ apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 --tuning 'adapter' \
 \
 --inference "Qual o sentido da vida?" \
---max_new_tokens 100 \
+--max_new_tokens 1000 \
 \
 --lora_r 16 \
 --lora_alpha 32 \
 --lora_target_modules 'query_key_value' \
---lora_dropout 0.05  \
+--lora_dropout 0.01  \
 --lora_bias 'none' \
 --lora_task_type 'CAUSAL_LM' \
 \
 --per_device_train_batch_size 12 \
 --gradient_accumulation_steps 4 \
---max_steps 1000 \
+--max_steps 100000 \
 --learning_rate 1e-4
 
