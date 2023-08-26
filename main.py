@@ -19,6 +19,7 @@ print(f'CUDA Avaliable: {torch.cuda.is_available()}')
 USER = os.environ['USER']
 
 parser = argparse.ArgumentParser(description="Prepared Adapter")
+parser.add_argument('--model_path', type=str, help="Name of the model, example: 'BLOOM'", required=True)
 parser.add_argument('--model_name', type=str, help="Name of the model, example: 'bloomz-3b'", required=True)
 parser.add_argument('--peft_method', type=str, choices={'lora','qlora'}, default='qlora')
 parser.add_argument('--tuning', type=str, choices={'instruction','adapter'}, default='adapter')
@@ -38,6 +39,7 @@ parser.add_argument('--learning_rate', type=float, default=1e-4) #
 args = parser.parse_args()
 
 model_name = args.model_name
+model_path = args.model_path
 peft_method = args.peft_method
 tuning = args.tuning
 inference = args.inference
@@ -56,7 +58,7 @@ warmup_steps = args.warmup_steps
 max_steps = args.max_steps
 learning_rate = args.learning_rate
 
-model_id = f"/scratch/LLM/BLOOM/{model_name}"
+model_id = f"/scratch/LLM/{model_path}/{model_name}"
 model_pretrained =  f"/scratch/{USER}/adapters/{model_name}-{peft_method}"
 
 # qLoRA
