@@ -92,11 +92,6 @@ config = LoraConfig(
     task_type=lora_task_type
 )
 
-#tokenizer = AutoTokenizer.from_pretrained(model_id, use_fast=False)
-
-#tokenizer = LlamaTokenizer.from_pretrained(model_id)
-#tokenizer.add_special_tokens({'pad_token': '[PAD]'})
-
 # Unsupervised fine-tuning
 if tuning == 'adapter':
     tokenizer = AutoTokenizer.from_pretrained(model_id)
@@ -114,16 +109,16 @@ if peft_method == 'qlora' and tuning == 'adapter':
 elif peft_method == 'lora':
     # Freezing the original wheigths 
     for param in model.parameters():
-      param.requires_grad = False  # freeze the model - train adapters later
-      if param.ndim == 1:
-        # cast the small parameters (e.g. layernorm) to fp32 for stability
-        param.data = param.data.to(torch.float32)
+        param.requires_grad = False  # freeze the model - train adapters later
+        if param.ndim == 1:
+            # cast the small parameters (e.g. layernorm) to fp32 for stability
+            param.data = param.data.to(torch.float32)
 
     model.gradient_checkpointing_enable()  # reduce number of stored activations
     model.enable_input_require_grads()
 
     class CastOutputToFloat(nn.Sequential):
-      def forward(self, x): return super().forward(x).to(torch.float32)
+        def forward(self, x): return super().forward(x).to(torch.float32)
     model.lm_head = CastOutputToFloat(model.lm_head)
 
     model = get_peft_model(model, config)
@@ -169,35 +164,29 @@ dataset_reduced = DatasetDict({
 
 dataset_prepared = dataset_reduced["train"].train_test_split(test_size=0.1)
 
+if tuning == 'adapter':
 #def generate_prompt(user: str, chip2: str) -> str:
-#def create_prompt(question, answer):
-#  if len(answer) < 1:
-#    chip2 = "Cannot Find Answer"
-#  else:
-#    answer = answer
-#  prompt_template = f"### QUESTION\n{question}\n\n### ANSWER\n{answer}</s>"
-#  return prompt_template
+    def create_prompt(question, answer):
+      if len(answer) < 1:
+          chip2 = "Cannot Find Answer"
+      else:
+          answer = answer
+      prompt_template = f"### QUESTION\n{question}\n\n### ANSWER\n{answer}</s>"
+      return prompt_template
 
-#mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(create_prompt(samples['user'], samples['chip2'])))
-
-#########################
-def create_prompt(example):
-  if example.get("answer", "") != "":
-    input_prompt = (f"Não é possível encontrar a resposta.")
-  else:
-    prompt_template = (    
-    "### QUESTION\n"
-    f"{example['user']}\n\n"
-    "### ANSWER\n"
-    f"{example['chip2']}")
-  return {"text" : prompt_template}
-
-mapped_dataset = dataset_prepared.map(create_prompt)
-#########################
-
-#mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(generate_prompt(samples['user'], samples['chip2'])))
-
-#mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(samples['chip2']), batched=True)
+    mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(create_prompt(samples['user'],     samples['chip2'])))
+elif peft_method == 'instruction':
+    def create_prompt(example):
+        if example.get("answer", "") != "":
+            input_prompt = (f"Não é possível encontrar a resposta.")
+        else:
+            prompt_template = (    
+            "### QUESTION\n"
+            f"{example['user']}\n\n"
+            "### ANSWER\n"
+            f"{example['chip2']}")
+        return {"text" : prompt_template}
+    mapped_dataset = dataset_prepared.map(create_prompt)
 
 # Unsupervised fine-tuning
 if tuning == 'adapter':
@@ -218,7 +207,7 @@ if tuning == 'adapter':
     )
     model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
     trainer.train()
-#    trainer.save_model(model_pretrained)
+    trainer.save_model(model_pretrained)
 # Supervised fine-tuning
 elif peft_method == 'instruction':
     training_arguments=TrainingArguments(
@@ -246,24 +235,26 @@ elif peft_method == 'instruction':
         max_seq_length=512,
         args=training_arguments,
     )
-
-
-#model.save_pretrained(model_pretrained)
+    trainer.train()
+    trainer.save_model(model_pretrained)
 
 
 # Inference
-#def make_inference():
-#  batch = tokenizer(inference, return_tensors='pt')
-#  with torch.cuda.amp.autocast():
-#    output_tokens = model.generate(**batch, max_new_tokens=max_new_tokens)
-#  print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))
-
-def make_inference(question):
-  batch = tokenizer(f"### QUESTION\n{question}\n\n### ANSWER\n", return_tensors='pt')
-  with torch.cuda.amp.autocast():
-    output_tokens = model.generate(**batch, max_new_tokens=max_new_tokens)
-  print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))
-
+if tuning == 'adapter':
+    def make_inference():
+        batch = tokenizer(inference, return_tensors='pt')
+        with torch.cuda.amp.autocast():
+            output_tokens = model.generate(**batch, max_new_tokens=max_new_tokens)
+        print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))
+elif peft_method == 'instruction':
+    def make_inference(question):
+        prompt = f"### QUESTION\n{question}\n\n### ANSWER\n"
+        inputs = tokenizer(prompt, return_tensors="pt", return_token_type_ids=False).to("cuda:0")
+        outputs = model.generate(**inputs, max_new_tokens=1000)
+        print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
+#        outputs = model.generate(**inputs, max_new_tokens=1000)
+#        print("---- NON-INSTRUCT-TUNED-MODEL ----")
+#        print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
 
 make_inference(inference)
 
