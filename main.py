@@ -83,7 +83,7 @@ elif peft_method == 'lora':
         device_map='auto',
     )
 
-config = LoraConfig(
+qlora_config = LoraConfig(
     r=lora_r,
     lora_alpha=lora_alpha,
     target_modules=[lora_target_modules],
@@ -104,7 +104,7 @@ elif tuning == 'instruction':
 if peft_method == 'qlora' and tuning == 'adapter':
     model.gradient_checkpointing_enable()
     model = prepare_model_for_kbit_training(model)
-    model = get_peft_model(model, config)
+    model = get_peft_model(model, qlora_config)
 # LoRA
 elif peft_method == 'lora':
     # Freezing the original wheigths 
@@ -121,7 +121,7 @@ elif peft_method == 'lora':
         def forward(self, x): return super().forward(x).to(torch.float32)
     model.lm_head = CastOutputToFloat(model.lm_head)
 
-    model = get_peft_model(model, config)
+    model = get_peft_model(model, qlora_config)
 
 
 print(model)
@@ -228,10 +228,10 @@ elif tuning == 'instruction':
     )
     trainer = SFTTrainer(
         model=model,
-        train_dataset=dataset_prepared["train"],
-        eval_dataset=dataset_prepared["test"],
+        train_dataset=mapped_dataset["train"],
+        eval_dataset=mapped_dataset["test"],
         tokenizer=tokenizer,
-        peft_config=config,
+        peft_config=qlora_config,
         dataset_text_field="text",
         max_seq_length=512,
         args=training_arguments,
