@@ -104,27 +104,27 @@ tokenizer = AutoTokenizer.from_pretrained(model_id)
 #    tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
 # qLoRA
-#if peft_method == 'qlora':
-#    model.gradient_checkpointing_enable()
-#    model = prepare_model_for_kbit_training(model)
-#    model = get_peft_model(model, config)
-## LoRA
-#elif peft_method == 'lora':
-#    # Freezing the original wheigths 
-#    for param in model.parameters():
-#      param.requires_grad = False  # freeze the model - train adapters later
-#      if param.ndim == 1:
-#        # cast the small parameters (e.g. layernorm) to fp32 for stability
-#        param.data = param.data.to(torch.float32)
+if peft_method == 'qlora' and tuning == 'adapter':
+    model.gradient_checkpointing_enable()
+    model = prepare_model_for_kbit_training(model)
+    model = get_peft_model(model, config)
+# LoRA
+elif peft_method == 'lora':
+    # Freezing the original wheigths 
+    for param in model.parameters():
+      param.requires_grad = False  # freeze the model - train adapters later
+      if param.ndim == 1:
+        # cast the small parameters (e.g. layernorm) to fp32 for stability
+        param.data = param.data.to(torch.float32)
 
-#    model.gradient_checkpointing_enable()  # reduce number of stored activations
-#    model.enable_input_require_grads()
+    model.gradient_checkpointing_enable()  # reduce number of stored activations
+    model.enable_input_require_grads()
 
-#    class CastOutputToFloat(nn.Sequential):
-#      def forward(self, x): return super().forward(x).to(torch.float32)
-#    model.lm_head = CastOutputToFloat(model.lm_head)
+    class CastOutputToFloat(nn.Sequential):
+      def forward(self, x): return super().forward(x).to(torch.float32)
+    model.lm_head = CastOutputToFloat(model.lm_head)
 
-#    model = get_peft_model(model, config)
+    model = get_peft_model(model, config)
 
 
 print(model)
