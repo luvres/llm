@@ -22,11 +22,11 @@ export CONTAINER_FILE="/opt/images/llm.sif"
 # --tuning, choices: {'instruction','adapter'}
 #
 apptainer run --nv ${CONTAINER_FILE} python -u main.py \
---model_path 'BLOOM' \
---model_name 'bloomz-7b1' \
+--model_path 'OLLAMA' \
+--model_name 'open_llama_3b_v2' \
 --peft_method "lora" \
 \
---tuning 'adapter' \
+--tuning 'instruction' \
 \
 --inference "Qual o sentido da vida?" \
 --max_new_tokens 1000 \
