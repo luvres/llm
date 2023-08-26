@@ -167,6 +167,8 @@ dataset_reduced = DatasetDict({
     })
 })
 
+dataset_prepared = dataset_reduced["train"].train_test_split(test_size=0.1)
+
 #def generate_prompt(user: str, chip2: str) -> str:
 #def create_prompt(question, answer):
 #  if len(answer) < 1:
@@ -178,7 +180,7 @@ dataset_reduced = DatasetDict({
 
 #mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(create_prompt(samples['user'], samples['chip2'])))
 
-###############
+#########################
 def create_prompt(example):
   if example.get("answer", "") != "":
     input_prompt = (f"Não é possível encontrar a resposta.")
@@ -190,7 +192,7 @@ def create_prompt(example):
     f"{example['chip2']}")
   return {"text" : prompt_template}
 
-mapped_dataset = dataset_reduced.map(create_prompt)
+mapped_dataset = dataset_prepared.map(create_prompt)
 #########################
 
 #mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(generate_prompt(samples['user'], samples['chip2'])))
@@ -219,8 +221,6 @@ if tuning == 'adapter':
 #    trainer.save_model(model_pretrained)
 # Supervised fine-tuning
 elif peft_method == 'instruction':
-    dataset_prepared = dataset_reduced["train"].train_test_split(test_size=0.1)
-
     training_arguments=TrainingArguments(
         per_device_train_batch_size=per_device_train_batch_size,
         gradient_accumulation_steps=gradient_accumulation_steps,
