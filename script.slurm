@@ -24,7 +24,7 @@ export CONTAINER_FILE="/opt/images/llm.sif"
 apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 --model_path 'OLLAMA' \
 --model_name 'open_llama_3b_v2' \
---peft_method "lora" \
+--peft_method "qlora" \
 \
 --tuning 'instruction' \
 \
