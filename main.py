@@ -234,7 +234,7 @@ elif peft_method == 'instruction':
     )
 
 
-model.save_pretrained(model_pretrained)
+#model.save_pretrained(model_pretrained)
 
 
 # Inference
