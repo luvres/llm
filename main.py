@@ -61,6 +61,10 @@ learning_rate = args.learning_rate
 model_id = f"/scratch/LLM/{model_path}/{model_name}"
 model_pretrained =  f"/scratch/{USER}/adapters/{model_name}-{peft_method}"
 
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+model = model.to(device)
+
+
 # qLoRA
 if peft_method == 'qlora':
     bnb_config = BitsAndBytesConfig(
