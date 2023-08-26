@@ -175,7 +175,7 @@ if tuning == 'adapter':
       return prompt_template
 
     mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(create_prompt(samples['user'],     samples['chip2'])))
-elif peft_method == 'instruction':
+elif tuning == 'instruction':
     def create_prompt(example):
         if example.get("answer", "") != "":
             input_prompt = (f"Não é possível encontrar a resposta.")
@@ -246,7 +246,7 @@ if tuning == 'adapter':
         with torch.cuda.amp.autocast():
             output_tokens = model.generate(**batch, max_new_tokens=max_new_tokens)
         print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))
-elif peft_method == 'instruction':
+elif tuning == 'instruction':
     def make_inference(question):
         prompt = f"### QUESTION\n{question}\n\n### ANSWER\n"
         inputs = tokenizer(prompt, return_tensors="pt", return_token_type_ids=False).to("cuda:0")
