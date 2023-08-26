@@ -148,18 +148,25 @@ dataset = load_dataset(dataset_name)
 
 dataset_reduced = DatasetDict({
     "train": Dataset.from_dict({
-        "user": dataset["train"]["user"][:100000],
-        "chip2": dataset["train"]["chip2"][:100000]
+        "user": dataset["train"]["user"][:1000],
+        "chip2": dataset["train"]["chip2"][:1000]
     })
 })
 
 #def generate_prompt(user: str, chip2: str) -> str:
-#  prompt = f"### INSTRUCTION\nO primeiro treinamento.\n\n### User:\n{user}\n### Chip2:\n{chip2}"
-#  return prompt
+def create_prompt(user, chip2):
+  if len(chip2) < 1:
+    chip2 = "Cannot Find Answer"
+  else:
+    chip2 = chip2
+  prompt_template = f"### QUESTION\n{user}\n\n### ANSWER\n{chip2}</s>"
+  return prompt_template
+
+mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(create_prompt(samples['user'], samples['chip2'])))
 
 #mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(generate_prompt(samples['user'], samples['chip2'])))
 
-mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(samples['chip2']), batched=True)
+#mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(samples['chip2']), batched=True)
 
 # Unsupervised fine-tuning
 if tuning == 'adapter':
@@ -188,11 +195,18 @@ model.save_pretrained(model_pretrained)
 
 
 # Inference
-def make_inference():
-  batch = tokenizer(inference, return_tensors='pt')
+#def make_inference():
+#  batch = tokenizer(inference, return_tensors='pt')
+#  with torch.cuda.amp.autocast():
+#    output_tokens = model.generate(**batch, max_new_tokens=max_new_tokens)
+#  print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))
+
+def make_inference(user):
+  batch = tokenizer(f"### QUESTION\n{user}\n\n### ANSWER\n", return_tensors='pt')
   with torch.cuda.amp.autocast():
     output_tokens = model.generate(**batch, max_new_tokens=max_new_tokens)
   print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))
+
 
 make_inference()
 
