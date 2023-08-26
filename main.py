@@ -93,10 +93,10 @@ config = LoraConfig(
     task_type=lora_task_type
 )
 
-tokenizer = AutoTokenizer.from_pretrained(model_id)
+#tokenizer = AutoTokenizer.from_pretrained(model_id, use_fast=False)
 
-#tokenizer = LlamaTokenizer.from_pretrained(model_id)
-#tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+tokenizer = LlamaTokenizer.from_pretrained(model_id)
+tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
 ## Unsupervised fine-tuning
 #if tuning == 'adapter':
