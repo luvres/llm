@@ -204,7 +204,7 @@ if tuning == 'adapter':
 #    trainer.save_model(model_pretrained)
 # Supervised fine-tuning
 elif peft_method == 'instruction':
-    dataset_prepared = dataset_reduced.train_test_split(test_size=0.1)
+    dataset_prepared = dataset_reduced["train"].train_test_split(test_size=0.1)
 
     training_arguments=TrainingArguments(
         per_device_train_batch_size=per_device_train_batch_size,
