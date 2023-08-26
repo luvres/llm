@@ -247,7 +247,6 @@ if tuning == 'adapter':
         with torch.cuda.amp.autocast():
             output_tokens = model.generate(**batch, max_new_tokens=max_new_tokens)
         print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))
-    make_inference(inference)
 elif tuning == 'instruction':
     def make_inference(question):
         prompt = f"### QUESTION\n{question}\n\n### ANSWER\n"
@@ -257,5 +256,6 @@ elif tuning == 'instruction':
 #        outputs = model.generate(**inputs, max_new_tokens=1000)
 #        print("---- NON-INSTRUCT-TUNED-MODEL ----")
 #        print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
-    make_inference(inference)
+
+make_inference(inference)
 
