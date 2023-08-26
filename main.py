@@ -231,7 +231,7 @@ elif tuning == 'instruction':
         train_dataset=dataset_prepared["train"],
         eval_dataset=dataset_prepared["test"],
         tokenizer=tokenizer,
-        peft_config=qlora_config,
+        peft_config=config,
         dataset_text_field="text",
         max_seq_length=512,
         args=training_arguments,
