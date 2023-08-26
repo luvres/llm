@@ -107,7 +107,7 @@ tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 #    tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
 # qLoRA
-if peft_method == 'qlora':
+if peft_method == 'qlora' and tuning == 'adapter':
     model.gradient_checkpointing_enable()
     model = prepare_model_for_kbit_training(model)
     model = get_peft_model(model, config)
