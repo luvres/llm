@@ -207,7 +207,8 @@ if tuning == 'adapter':
     )
     model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
     trainer.train()
-    trainer.save_model(model_pretrained)
+#    trainer.save_model(model_pretrained)
+    model.save_pretrained(model_pretrained)
 # Supervised fine-tuning
 elif peft_method == 'instruction':
     training_arguments=TrainingArguments(
@@ -246,6 +247,7 @@ if tuning == 'adapter':
         with torch.cuda.amp.autocast():
             output_tokens = model.generate(**batch, max_new_tokens=max_new_tokens)
         print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))
+    make_inference(inference)
 elif tuning == 'instruction':
     def make_inference(question):
         prompt = f"### QUESTION\n{question}\n\n### ANSWER\n"
@@ -255,6 +257,5 @@ elif tuning == 'instruction':
 #        outputs = model.generate(**inputs, max_new_tokens=1000)
 #        print("---- NON-INSTRUCT-TUNED-MODEL ----")
 #        print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
-
-make_inference(inference)
+    make_inference(inference)
 
