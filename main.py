@@ -14,6 +14,7 @@ from trl import SFTTrainer
 
 #os.environ["CUDA_VISIBLE_DEVICES"]="0"
 print(f'CUDA Avaliable: {torch.cuda.is_available()}')
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
 # Environment variable
 USER = os.environ['USER']
@@ -61,8 +62,6 @@ learning_rate = args.learning_rate
 model_id = f"/scratch/LLM/{model_path}/{model_name}"
 model_pretrained =  f"/scratch/{USER}/adapters/{model_name}-{peft_method}"
 
-device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-model = model.to(device)
 
 
 # qLoRA
@@ -225,6 +224,7 @@ elif peft_method == 'instruction':
 #        group_by_length=True,
 #        lr_scheduler_type = "constant"
     )
+    model = model.to(device)
     trainer = SFTTrainer(
         model=model,
         train_dataset=dataset_prepared["train"],
