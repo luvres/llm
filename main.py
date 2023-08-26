@@ -168,15 +168,30 @@ dataset_reduced = DatasetDict({
 })
 
 #def generate_prompt(user: str, chip2: str) -> str:
-def create_prompt(question, answer):
-  if len(answer) < 1:
-    chip2 = "Cannot Find Answer"
-  else:
-    answer = answer
-  prompt_template = f"### QUESTION\n{question}\n\n### ANSWER\n{answer}</s>"
-  return prompt_template
+#def create_prompt(question, answer):
+#  if len(answer) < 1:
+#    chip2 = "Cannot Find Answer"
+#  else:
+#    answer = answer
+#  prompt_template = f"### QUESTION\n{question}\n\n### ANSWER\n{answer}</s>"
+#  return prompt_template
 
-mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(create_prompt(samples['user'], samples['chip2'])))
+#mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(create_prompt(samples['user'], samples['chip2'])))
+
+###############
+def create_prompt(example):
+  if example.get("answer", "") != "":
+    input_prompt = (f"Não é possível encontrar a resposta.")
+  else:
+    prompt_template = (    
+    "### QUESTION\n"
+    f"{example['user']}\n\n"
+    "### ANSWER\n"
+    f"{example['chip2']}")
+  return {"text" : prompt_template}
+
+mapped_dataset = dataset_reduced.map(create_prompt)
+#########################
 
 #mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(generate_prompt(samples['user'], samples['chip2'])))
 
