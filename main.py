@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 #import bitsandbytes as bnb
 from transformers import (
-    AutoModelForCausalLM, BitsAndBytesConfig, AutoTokenizer, 
+    AutoModelForCausalLM, BitsAndBytesConfig, AutoTokenizer, LlamaTokenizer,
     Trainer, TrainingArguments, DataCollatorForLanguageModeling,
     TrainingArguments
 )
@@ -93,7 +93,11 @@ config = LoraConfig(
     task_type=lora_task_type
 )
 
-tokenizer = AutoTokenizer.from_pretrained(model_id)
+if tuning == 'adapter':
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
+elif peft_method == 'instruction':
+    tokenizer = LlamaTokenizer.from_pretrained(model_id)
+    tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
 # qLoRA
 if peft_method == 'qlora':
