@@ -14,13 +14,19 @@
 export APPTAINER_BIND="/scratch/$USER,/scratch/LLM"
 export CONTAINER_FILE="/opt/images/llm.sif"
 ###########
-#
+# 
 # Options:
 # --model_path, example: 'BLOOM' | 'OLLAMA'
 # --model_name, example: 'bloomz-7b1' | 'open_llama_3b_v2'
 # --peft_method, choices: {'lora','qlora'}
 # --tuning, choices: {'instruction','adapter'}
-#
+# --lora_target_modules: ["query_key_value"] ----------> (bloom | gpt_neox | chatglm)
+#                        ["q_proj", "v_proj"] ---------> (llama | bart | opt | gptj | gpt_neo)
+#                        ["q", "v"] -------------------> (t5 | mt5 )
+#                        ["catt_n"] -------------------> (gpt2)
+#                        ["query", "value"] -----------> (bert | roberta | xlm-roberta | electra | layoutlm)
+#                        ["query_proj", "value_proj"] -> (deberta-v2)
+#                        ["in_proj"] ------------------> (deberta)
 apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 --model_path 'OLLAMA' \
 --model_name 'open_llama_3b_v2' \
@@ -33,7 +39,7 @@ apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 \
 --lora_r 16 \
 --lora_alpha 32 \
---lora_target_modules 'query_key_value' \
+--lora_target_modules ["q_proj", "v_proj"] \
 --lora_dropout 0.05  \
 --lora_bias 'none' \
 --lora_task_type 'CAUSAL_LM' \

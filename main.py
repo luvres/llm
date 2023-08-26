@@ -87,7 +87,7 @@ elif peft_method == 'lora':
 config = LoraConfig(
     r=lora_r,
     lora_alpha=lora_alpha,
-    target_modules=[lora_target_modules],
+    target_modules=lora_target_modules,
     lora_dropout=lora_dropout,
     bias=lora_bias,
     task_type=lora_task_type
