@@ -159,7 +159,7 @@ def create_prompt(question, answer):
     chip2 = "Cannot Find Answer"
   else:
     answer = answer
-  prompt_template = f"### QUESTION\n{question}\n\n### ANSWER\n{chanswerip2}</s>"
+  prompt_template = f"### QUESTION\n{question}\n\n### ANSWER\n{answer}</s>"
   return prompt_template
 
 mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(create_prompt(samples['user'], samples['chip2'])))
