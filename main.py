@@ -210,7 +210,7 @@ if tuning == 'adapter':
 #    trainer.save_model(model_pretrained)
     model.save_pretrained(model_pretrained)
 # Supervised fine-tuning
-elif peft_method == 'instruction':
+elif tuning == 'instruction':
     training_arguments=TrainingArguments(
         per_device_train_batch_size=per_device_train_batch_size,
         gradient_accumulation_steps=gradient_accumulation_steps,
