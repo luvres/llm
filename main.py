@@ -5,10 +5,12 @@ import torch.nn as nn
 #import bitsandbytes as bnb
 from transformers import (
     AutoModelForCausalLM, BitsAndBytesConfig, AutoTokenizer, 
-    Trainer, TrainingArguments, DataCollatorForLanguageModeling
+    Trainer, TrainingArguments, DataCollatorForLanguageModeling,
+    TrainingArguments
 )
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from datasets import load_dataset, Dataset, DatasetDict
+from trl import SFTTrainer
 
 #os.environ["CUDA_VISIBLE_DEVICES"]="0"
 print(f'CUDA Avaliable: {torch.cuda.is_available()}')
@@ -189,7 +191,35 @@ if tuning == 'adapter':
     trainer.train()
 #    trainer.save_model(model_pretrained)
 # Supervised fine-tuning
-#elif peft_method == 'instruction':
+elif peft_method == 'instruction':
+    dataset_prepared = dataset_reduced.train_test_split(test_size=0.1)
+
+    training_arguments=TrainingArguments(
+        per_device_train_batch_size=per_device_train_batch_size,
+        gradient_accumulation_steps=gradient_accumulation_steps,
+        max_steps=max_steps,
+        learning_rate=2e-4,
+        fp16=True,
+        optim="paged_adamw_8bit",
+        output_dir='outputs',
+#        save_steps = 10
+#        logging_steps = 10
+#        max_grad_norm = 0.3
+#        warmup_ratio = 0.03
+#        group_by_length=True,
+#        lr_scheduler_type = "constant"
+    )
+    trainer = SFTTrainer(
+        model=model,
+        train_dataset=dataset_prepared["train"],
+        eval_dataset=dataset_prepared["test"],
+        tokenizer=tokenizer,
+        peft_config=qlora_config,
+        dataset_text_field="text",
+        max_seq_length=512,
+        args=training_arguments,
+    )
+
 
 model.save_pretrained(model_pretrained)
 

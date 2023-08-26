@@ -16,15 +16,15 @@ export CONTAINER_FILE="/opt/images/llm.sif"
 ###########
 #
 # Options:
-# --model_name, example: 'bloomz-3b'
+# --model_name, example: 'bloomz-3b' | 'open_llama_3b_v2'
 # --peft_method, choices: {'lora','qlora'}
 # --tuning, choices: {'instruction','adapter'}
 #
 apptainer run --nv ${CONTAINER_FILE} python -u main.py \
---model_name 'bloomz-7b1' \
+--model_name 'open_llama_3b_v2' \
 --peft_method "lora" \
 \
---tuning 'adapter' \
+--tuning 'instruction' \
 \
 --inference "Qual o sentido da vida?" \
 --max_new_tokens 1000 \
