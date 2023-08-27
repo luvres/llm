@@ -17,7 +17,7 @@ export CONTAINER_FILE="/opt/images/llm.sif"
 # 
 # Options:
 # --model_path, example: 'BLOOM' | 'OLLAMA'
-# --model_name, example: 'bloomz-73b' | 'open_llama_3b_v2'
+# --model_name, example: 'bloomz-3b' | 'open_llama_3b_v2'
 # --peft_method, choices: {'lora','qlora'}
 # --tuning, choices: {'adapter', 'instruction'}
 # --lora_target_modules: ["query_key_value"] ----------> (bloom | gpt_neox | chatglm)
@@ -27,6 +27,28 @@ export CONTAINER_FILE="/opt/images/llm.sif"
 #                        ["query", "value"] -----------> (bert | roberta | xlm-roberta | electra | layoutlm)
 #                        ["query_proj", "value_proj"] -> (deberta-v2)
 #                        ["in_proj"] ------------------> (deberta)
+#apptainer run --nv ${CONTAINER_FILE} python -u main.py \
+#--model_path 'BLOOM' \
+#--model_name 'bloomz-3b' \
+#--peft_method "lora" \
+#\
+#--tuning 'adapter' \
+#\
+#--inference "Qual é o sentido da vida?" \
+#--max_new_tokens 20 \
+#\
+#--lora_r 16 \
+#--lora_alpha 32 \
+#--lora_target_modules '' \
+#--lora_dropout 0.05  \
+#--lora_bias 'none' \
+#--lora_task_type 'CAUSAL_LM' \
+#\
+#--per_device_train_batch_size 6 \
+#--gradient_accumulation_steps 4 \
+#--max_steps 10 \
+#--learning_rate 1e-4
+#################################
 apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 --model_path 'OLLAMA' \
 --model_name 'open_llama_3b_v2' \
@@ -44,7 +66,7 @@ apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 --lora_bias 'none' \
 --lora_task_type 'CAUSAL_LM' \
 \
---per_device_train_batch_size 6 \
+--per_device_train_batch_size 1 \
 --gradient_accumulation_steps 4 \
 --max_steps 10 \
 --learning_rate 2e-4
