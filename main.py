@@ -63,6 +63,7 @@ model_pretrained =  f"/scratch/{USER}/adapters/{model_name}-{peft_method}"
 
 # qLoRA
 if peft_method == 'qlora':
+    print('iazone -> qLoRA')
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_use_double_quant=True,
@@ -97,11 +98,13 @@ if tuning == 'adapter':
     tokenizer = AutoTokenizer.from_pretrained(model_id)
 # Supervised fine-tuning
 elif tuning == 'instruction':
+    print('iazone -> tokenizer')
     tokenizer = LlamaTokenizer.from_pretrained(model_id)
     tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
 # qLoRA
 if peft_method == 'qlora' and tuning == 'adapter':
+    print('iazone -> adapter')
     model.gradient_checkpointing_enable()
     model = prepare_model_for_kbit_training(model)
     model = get_peft_model(model, qlora_config)
@@ -176,6 +179,7 @@ if tuning == 'adapter':
 
     mapped_dataset = dataset_reduced.map(lambda samples: tokenizer(create_prompt(samples['user'],     samples['chip2'])))
 elif tuning == 'instruction':
+    print('iazone -> create_prompt')
     def create_prompt(example):
         if example.get("answer", "") != "":
             input_prompt = (f"Não é possível encontrar a resposta.")
@@ -211,6 +215,7 @@ if tuning == 'adapter':
     model.save_pretrained(model_pretrained)
 # Supervised fine-tuning
 elif tuning == 'instruction':
+    print('iazone -> trainer')
     training_arguments=TrainingArguments(
         per_device_train_batch_size=per_device_train_batch_size,
         gradient_accumulation_steps=gradient_accumulation_steps,
