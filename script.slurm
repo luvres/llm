@@ -36,7 +36,7 @@ apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 --tuning 'adapter' \
 \
 --inference "Qual é o sentido da vida?" \
---max_new_tokens 20 \
+--max_new_tokens 100 \
 \
 --lora_r 16 \
 --lora_alpha 32 \
@@ -47,7 +47,7 @@ apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 \
 --per_device_train_batch_size 6 \
 --gradient_accumulation_steps 4 \
---max_steps 10 \
+--max_steps 100 \
 --learning_rate 1e-4
 #################################
 #apptainer run --nv ${CONTAINER_FILE} python -u main.py \
