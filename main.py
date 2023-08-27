@@ -234,11 +234,6 @@ elif tuning == 'instruction':
 
 # Inference
 if tuning == 'adapter':
-#    def make_inference():
-#        batch = tokenizer(inference, return_tensors='pt')
-#        with torch.cuda.amp.autocast():
-#            output_tokens = model.generate(**batch, max_new_tokens=max_new_tokens)
-#        print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))
     def make_inference(question):
         batch = tokenizer(f"### QUESTION\n{question}\n\n### ANSWER\n", return_tensors='pt')
         with torch.cuda.amp.autocast():
