@@ -63,7 +63,6 @@ model_pretrained =  f"/scratch/{USER}/adapters/{model_name}-{peft_method}"
 
 # qLoRA
 if peft_method == 'qlora':
-    print('iazone -> qLoRA')
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_use_double_quant=True,
@@ -87,13 +86,13 @@ elif peft_method == 'lora':
 qlora_config = LoraConfig(
     r=lora_r,
     lora_alpha=lora_alpha,
-    target_modules=[lora_target_modules],
+#    target_modules=[lora_target_modules],
     lora_dropout=lora_dropout,
     bias=lora_bias,
     task_type=lora_task_type
 )
 
-# Unsupervised fine-tuning
+# Tokenizer
 if tuning == 'adapter':
     tokenizer = AutoTokenizer.from_pretrained(model_id)
 # Supervised fine-tuning
@@ -125,7 +124,7 @@ elif peft_method == 'lora':
     model.lm_head = CastOutputToFloat(model.lm_head)
 
     model = get_peft_model(model, qlora_config)
-
+    
 
 print(model)
 
@@ -146,7 +145,6 @@ def print_trainable_parameters(model):
     )
 
 print_trainable_parameters(model)
-
 
 # Load dataset
 #DatasetDict({
@@ -220,12 +218,11 @@ elif tuning == 'instruction':
         per_device_train_batch_size=per_device_train_batch_size,
         gradient_accumulation_steps=gradient_accumulation_steps,
         max_steps=max_steps,
-        learning_rate=2e-4,
+        learning_rate=learning_rate,
         fp16=True,
         optim="paged_adamw_8bit",
         output_dir='outputs'
     )
-    
     trainer = SFTTrainer(
         model=model,
         train_dataset=mapped_dataset["train"],
@@ -236,36 +233,26 @@ elif tuning == 'instruction':
         max_seq_length=512,
         args=training_arguments
     )
-#    trainer = SFTTrainer(
-#        model=model,
-#        train_dataset=mapped_dataset["train"],
-#        eval_dataset=mapped_dataset["test"],
-#        tokenizer=tokenizer,
-#        peft_config=qlora_config,
-#        dataset_text_field="text",
-#        max_seq_length=512,
-#        args=training_arguments
-#    )
-#    trainer.train()
-#    trainer.save_model(model_pretrained)
+    trainer.train()
+    trainer.save_model(model_pretrained)
 
 
-## Inference
-#if tuning == 'adapter':
-#    def make_inference():
-#        batch = tokenizer(inference, return_tensors='pt')
-#        with torch.cuda.amp.autocast():
-#            output_tokens = model.generate(**batch, max_new_tokens=max_new_tokens)
-#        print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))
-#elif tuning == 'instruction':
-#    def make_inference(question):
-#        prompt = f"### QUESTION\n{question}\n\n### ANSWER\n"
-#        inputs = tokenizer(prompt, return_tensors="pt", return_token_type_ids=False).to("cuda:0")
+# Inference
+if tuning == 'adapter':
+    def make_inference():
+        batch = tokenizer(inference, return_tensors='pt')
+        with torch.cuda.amp.autocast():
+            output_tokens = model.generate(**batch, max_new_tokens=max_new_tokens)
+        print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))
+elif tuning == 'instruction':
+    def make_inference(question):
+        prompt = f"### QUESTION\n{question}\n\n### ANSWER\n"
+        inputs = tokenizer(prompt, return_tensors="pt", return_token_type_ids=False).to("cuda:0")
+        outputs = model.generate(**inputs, max_new_tokens=1000)
+        print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
 #        outputs = model.generate(**inputs, max_new_tokens=1000)
+#        print("---- NON-INSTRUCT-TUNED-MODEL ----")
 #        print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
-##        outputs = model.generate(**inputs, max_new_tokens=1000)
-##        print("---- NON-INSTRUCT-TUNED-MODEL ----")
-##        print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
 
-#make_inference(inference)
+make_inference(inference)
 

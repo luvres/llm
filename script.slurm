@@ -46,6 +46,6 @@ apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 \
 --per_device_train_batch_size 1 \
 --gradient_accumulation_steps 4 \
---max_steps 100 \
---learning_rate 1e-4
+--max_steps 10 \
+--learning_rate 2e-4
 
