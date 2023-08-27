@@ -236,26 +236,26 @@ elif tuning == 'instruction':
         max_seq_length=512,
         args=training_arguments,
     )
-    trainer.train()
-    trainer.save_model(model_pretrained)
+#    trainer.train()
+#    trainer.save_model(model_pretrained)
 
 
-# Inference
-if tuning == 'adapter':
-    def make_inference():
-        batch = tokenizer(inference, return_tensors='pt')
-        with torch.cuda.amp.autocast():
-            output_tokens = model.generate(**batch, max_new_tokens=max_new_tokens)
-        print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))
-elif tuning == 'instruction':
-    def make_inference(question):
-        prompt = f"### QUESTION\n{question}\n\n### ANSWER\n"
-        inputs = tokenizer(prompt, return_tensors="pt", return_token_type_ids=False).to("cuda:0")
-        outputs = model.generate(**inputs, max_new_tokens=1000)
-        print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
+## Inference
+#if tuning == 'adapter':
+#    def make_inference():
+#        batch = tokenizer(inference, return_tensors='pt')
+#        with torch.cuda.amp.autocast():
+#            output_tokens = model.generate(**batch, max_new_tokens=max_new_tokens)
+#        print('\n\n', tokenizer.decode(output_tokens[0], skip_special_tokens=True))
+#elif tuning == 'instruction':
+#    def make_inference(question):
+#        prompt = f"### QUESTION\n{question}\n\n### ANSWER\n"
+#        inputs = tokenizer(prompt, return_tensors="pt", return_token_type_ids=False).to("cuda:0")
 #        outputs = model.generate(**inputs, max_new_tokens=1000)
-#        print("---- NON-INSTRUCT-TUNED-MODEL ----")
 #        print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
+##        outputs = model.generate(**inputs, max_new_tokens=1000)
+##        print("---- NON-INSTRUCT-TUNED-MODEL ----")
+##        print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
 
-make_inference(inference)
+#make_inference(inference)
 
