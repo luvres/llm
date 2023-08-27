@@ -245,7 +245,8 @@ elif tuning == 'instruction':
 #        max_seq_length=512,
 #        args=training_arguments
 #    )
-#    trainer.train()
+
+    trainer.train()
 #    trainer.save_model(model_pretrained)
 
 
