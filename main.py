@@ -184,7 +184,7 @@ elif tuning == 'instruction':
         if example.get("answer", "") != "":
             input_prompt = (f"Não é possível encontrar a resposta.")
         else:
-            prompt_template = (    
+            prompt_template = (
             "### QUESTION\n"
             f"{example['user']}\n\n"
             "### ANSWER\n"
@@ -225,16 +225,16 @@ elif tuning == 'instruction':
         optim="paged_adamw_8bit",
         output_dir='outputs'
     )
-    trainer = SFTTrainer(
-        model=model,
-        train_dataset=mapped_dataset["train"],
-        eval_dataset=mapped_dataset["test"],
-        tokenizer=tokenizer,
-        peft_config=qlora_config,
-        dataset_text_field="text",
-        max_seq_length=512,
-        args=training_arguments
-    )
+#    trainer = SFTTrainer(
+#        model=model,
+#        train_dataset=mapped_dataset["train"],
+#        eval_dataset=mapped_dataset["test"],
+#        tokenizer=tokenizer,
+#        peft_config=qlora_config,
+#        dataset_text_field="text",
+#        max_seq_length=512,
+#        args=training_arguments
+#    )
 #    trainer.train()
 #    trainer.save_model(model_pretrained)
 
