@@ -36,7 +36,7 @@ apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 --tuning 'adapter' \
 \
 --inference "Qual é o sentido da vida?" \
---max_new_tokens 100 \
+--max_new_tokens 1024 \
 \
 --lora_r 16 \
 --lora_alpha 32 \
