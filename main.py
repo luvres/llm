@@ -225,6 +225,16 @@ elif tuning == 'instruction':
         optim="paged_adamw_8bit",
         output_dir='outputs'
     )
+    training_arguments=TrainingArguments(
+        per_device_train_batch_size=per_device_train_batch_size,
+        gradient_accumulation_steps=gradient_accumulation_steps,
+        max_steps=max_steps,
+        learning_rate=2e-4,
+        fp16=True,
+        optim="paged_adamw_8bit",
+        output_dir='outputs'
+    )
+
 #    trainer = SFTTrainer(
 #        model=model,
 #        train_dataset=mapped_dataset["train"],
