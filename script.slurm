@@ -17,7 +17,7 @@ export CONTAINER_FILE="/opt/images/llm.sif"
 # 
 # Options:
 # --model_path, example: 'BLOOM' | 'OLLAMA'
-# --model_name, example: 'bloomz-7b1' | 'open_llama_3b_v2'
+# --model_name, example: 'bloomz-73b' | 'open_llama_3b_v2'
 # --peft_method, choices: {'lora','qlora'}
 # --tuning, choices: {'adapter', 'instruction'}
 # --lora_target_modules: ["query_key_value"] ----------> (bloom | gpt_neox | chatglm)
@@ -34,8 +34,8 @@ apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 \
 --tuning 'instruction' \
 \
---inference "Qual o sentido da vida?" \
---max_new_tokens 1000 \
+--inference "Qual é o sentido da vida?" \
+--max_new_tokens 20 \
 \
 --lora_r 16 \
 --lora_alpha 32 \
@@ -44,7 +44,7 @@ apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 --lora_bias 'none' \
 --lora_task_type 'CAUSAL_LM' \
 \
---per_device_train_batch_size 1 \
+--per_device_train_batch_size 6 \
 --gradient_accumulation_steps 4 \
 --max_steps 10 \
 --learning_rate 2e-4

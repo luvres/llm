@@ -245,9 +245,9 @@ elif tuning == 'instruction':
         inputs = tokenizer(prompt, return_tensors="pt", return_token_type_ids=False).to("cuda:0")
         outputs = model.generate(**inputs, max_new_tokens=1000)
         print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
-#        outputs = model.generate(**inputs, max_new_tokens=1000)
-#        print("---- NON-INSTRUCT-TUNED-MODEL ----")
-#        print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
+##        outputs = model.generate(**inputs, max_new_tokens=1000)
+##        print("---- NON-INSTRUCT-TUNED-MODEL ----")
+##        print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
 
 make_inference(inference)
 
