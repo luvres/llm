@@ -223,13 +223,7 @@ elif tuning == 'instruction':
         learning_rate=2e-4,
         fp16=True,
         optim="paged_adamw_8bit",
-        output_dir='outputs',
-#        save_steps = 10
-#        logging_steps = 10
-#        max_grad_norm = 0.3
-#        warmup_ratio = 0.03
-#        group_by_length=True,
-#        lr_scheduler_type = "constant"
+        output_dir='outputs'
     )
     trainer = SFTTrainer(
         model=model,
@@ -239,9 +233,9 @@ elif tuning == 'instruction':
         peft_config=qlora_config,
         dataset_text_field="text",
         max_seq_length=512,
-        args=training_arguments,
+        args=training_arguments
     )
-#    trainer.train()
+    trainer.train()
 #    trainer.save_model(model_pretrained)
 
 
