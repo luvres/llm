@@ -30,7 +30,7 @@ export CONTAINER_FILE="/opt/images/llm.sif"
 #################################
 apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 --model_path 'BLOOM' \
---model_name 'bloomz-3b' \
+--model_name 'bloomz-7b1' \
 --peft_method "lora" \
 \
 --tuning 'adapter' \
