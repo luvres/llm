@@ -31,7 +31,7 @@ parser.add_argument('--inference', type=str, default="Quais são as estações d
 parser.add_argument('--max_new_tokens', type=int, default=50)
 parser.add_argument('--lora_r', type=int, default=16)
 parser.add_argument('--lora_alpha', type=int, default=32)
-parser.add_argument('--lora_target_modules', type=list, nargs='+', default='query_key_value')
+parser.add_argument('--lora_target_modules', type=str, nargs='+', default='query_key_value')
 parser.add_argument('--lora_dropout', type=float, default=0.05)
 parser.add_argument('--lora_bias', type=str, choices={'all','none'}, required='none')
 parser.add_argument('--lora_task_type', type=str, default='CAUSAL_LM')
@@ -39,7 +39,7 @@ parser.add_argument('--per_device_train_batch_size', type=int, default=6)
 parser.add_argument('--gradient_accumulation_steps', type=int, default=4)
 parser.add_argument('--warmup_steps', type=int, default=100)
 parser.add_argument('--max_steps', type=int, default=100)
-parser.add_argument('--learning_rate', type=float, default=1e-4) # 
+parser.add_argument('--learning_rate', type=float, default=1e-4)
 args = parser.parse_args()
 
 model_name = args.model_name
