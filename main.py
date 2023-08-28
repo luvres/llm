@@ -31,7 +31,7 @@ parser.add_argument('--inference', type=str, default="Quais são as estações d
 parser.add_argument('--max_new_tokens', type=int, default=50)
 parser.add_argument('--lora_r', type=int, default=16)
 parser.add_argument('--lora_alpha', type=int, default=32)
-parser.add_argument('--lora_target_modules', type=str, default='query_key_value')
+parser.add_argument('--lora_target_modules', type=list, default='query_key_value')
 parser.add_argument('--lora_dropout', type=float, default=0.05)
 parser.add_argument('--lora_bias', type=str, choices={'all','none'}, required='none')
 parser.add_argument('--lora_task_type', type=str, default='CAUSAL_LM')
@@ -90,7 +90,7 @@ elif peft_method == 'lora':
 qlora_config = LoraConfig(
     r=lora_r,
     lora_alpha=lora_alpha,
-    target_modules=[lora_target_modules],
+    target_modules=lora_target_modules,
     lora_dropout=lora_dropout,
     bias=lora_bias,
     task_type=lora_task_type
