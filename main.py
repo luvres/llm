@@ -51,7 +51,7 @@ max_new_tokens = args.max_new_tokens
 # LoraConfig
 lora_r = args.lora_r
 lora_alpha = args.lora_alpha
-lora_target_modules = [args.lora_target_modules]
+lora_target_modules = args.lora_target_modules
 lora_dropout = args.lora_dropout
 lora_bias = args.lora_bias
 lora_task_type = args.lora_task_type

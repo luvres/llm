@@ -65,7 +65,7 @@ apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 \
 --lora_r 16 \
 --lora_alpha 32 \
---lora_target_modules 'q_proj up_proj o_proj k_proj down_proj gate_proj v_proj' \
+--lora_target_modules 'q_proj' 'up_proj' 'o_proj' 'k_proj' 'down_proj' 'gate_proj' 'v_proj' \
 --lora_dropout 0.05  \
 --lora_bias 'none' \
 --lora_task_type 'CAUSAL_LM' \
