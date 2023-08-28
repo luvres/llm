@@ -82,7 +82,7 @@ if peft_method == 'qlora':
 elif peft_method == 'lora':
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
-        torch_dtype=torch.float16,
+        torch_dtype=torch.bfloat16,
         load_in_8bit=True,
         device_map='auto',
     )
