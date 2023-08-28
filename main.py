@@ -218,11 +218,15 @@ elif tuning == 'instruction':
     training_arguments=TrainingArguments(
         per_device_train_batch_size=per_device_train_batch_size,
         gradient_accumulation_steps=gradient_accumulation_steps,
-        max_steps=max_steps,
-        learning_rate=learning_rate,
-        fp16=True,
         optim="paged_adamw_8bit",
+        learning_rate=learning_rate,
+        max_steps=max_steps,
+        fp16=True,
         output_dir='outputs'
+        save_steps=10,
+        logging_steps=10,
+        max_grad_norm=0.3,
+        lr_scheduler_type="constant",
     )
     trainer = SFTTrainer(
         model=model,
