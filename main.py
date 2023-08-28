@@ -13,7 +13,7 @@ from datasets import load_dataset, Dataset, DatasetDict
 from trl import SFTTrainer
 
 #os.environ["CUDA_VISIBLE_DEVICES"]="0"
-print(f'CUDA\n\
+print(f'CUDA:\n\
 Avaliable: {torch.cuda.is_available()}\n\
  bfloat16: {torch.cuda.is_bf16_supported()}\n'\
 )
