@@ -101,8 +101,10 @@ if tuning == 'adapter':
     tokenizer = AutoTokenizer.from_pretrained(model_id)
 # Supervised fine-tuning
 elif tuning == 'instruction':
-    tokenizer = LlamaTokenizer.from_pretrained(model_id)
-    tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+#    tokenizer = LlamaTokenizer.from_pretrained(model_id)
+#    tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+    tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
+    tokenizer.pad_token = tokenizer.eos_token
 
 # qLoRA
 if peft_method == 'qlora' and tuning == 'adapter':
