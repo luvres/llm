@@ -31,7 +31,7 @@ parser.add_argument('--inference', type=str, default="Quais são as estações d
 parser.add_argument('--max_new_tokens', type=int, default=50)
 parser.add_argument('--lora_r', type=int, default=16)
 parser.add_argument('--lora_alpha', type=int, default=32)
-parser.add_argument('--lora_target_modules', nargs='+', default='query_key_value')
+parser.add_argument('--lora_target_modules', type=str, nargs='+', default='query_key_value')
 parser.add_argument('--lora_dropout', type=float, default=0.05)
 parser.add_argument('--lora_bias', type=str, choices={'all','none'}, required='none')
 parser.add_argument('--lora_task_type', type=str, default='CAUSAL_LM')
@@ -51,7 +51,7 @@ max_new_tokens = args.max_new_tokens
 # LoraConfig
 lora_r = args.lora_r
 lora_alpha = args.lora_alpha
-lora_target_modules = args.lora_target_modules
+lora_target_modules = [args.lora_target_modules]
 lora_dropout = args.lora_dropout
 lora_bias = args.lora_bias
 lora_task_type = args.lora_task_type
