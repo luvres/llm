@@ -90,7 +90,7 @@ elif peft_method == 'lora':
 qlora_config = LoraConfig(
     r=lora_r,
     lora_alpha=lora_alpha,
-    target_modules=[["q_proj", "v_proj"]],
+    target_modules=[],
     lora_dropout=lora_dropout,
     bias=lora_bias,
     task_type=lora_task_type
