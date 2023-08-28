@@ -27,6 +27,9 @@ export CONTAINER_FILE="/opt/images/llm.sif"
 #                        ["query", "value"] -----------> (bert | roberta | xlm-roberta | electra | layoutlm)
 #                        ["query_proj", "value_proj"] -> (deberta-v2)
 #                        ["in_proj"] ------------------> (deberta)
+# ["q_proj","up_proj","o_proj","k_proj","down_proj","gate_proj","v_proj"] > (openllama)
+    
+    
 #################################
 #apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 #--model_path 'BLOOM' \
@@ -62,7 +65,7 @@ apptainer run --nv ${CONTAINER_FILE} python -u main.py \
 \
 --lora_r 16 \
 --lora_alpha 32 \
---lora_target_modules 'q_proj, v_proj' \
+--lora_target_modules '"q_proj","up_proj","o_proj","k_proj","down_proj","gate_proj","v_proj"' \
 --lora_dropout 0.05  \
 --lora_bias 'none' \
 --lora_task_type 'CAUSAL_LM' \
