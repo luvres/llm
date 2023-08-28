@@ -14,6 +14,8 @@ from trl import SFTTrainer
 
 #os.environ["CUDA_VISIBLE_DEVICES"]="0"
 print(f'CUDA Avaliable: {torch.cuda.is_available()}')
+print(f'CUDA bfloat16: {torch.cuda.is_bf16_supported()}')
+device = "cuda"
 
 # Environment variable
 USER = os.environ['USER']
@@ -242,10 +244,10 @@ if tuning == 'adapter':
 elif tuning == 'instruction':
     def make_inference(question):
         print(question)
-#        prompt = f"### QUESTION\n{question}\n\n### ANSWER\n"
-#        inputs = tokenizer(prompt, return_tensors="pt", return_token_type_ids=False).to("cuda:0")
-#        outputs = model.generate(**inputs, max_new_tokens=1000)
-#        print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
+        prompt = f"### QUESTION\n{question}\n\n### ANSWER\n"
+        inputs = tokenizer(prompt, return_tensors="pt", return_token_type_ids=False).to(device)
+        outputs = model.generate(**inputs, max_new_tokens=100)
+        print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
 ##        print("---- NON-INSTRUCT-TUNED-MODEL ----")
 ##        print('\n\n', tokenizer.decode(outputs[0], skip_special_tokens=True))
 
