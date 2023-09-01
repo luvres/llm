@@ -2,6 +2,14 @@ FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
 LABEL mantainer="Leonardo Loures <luvres@hotmail.com>"
 
 RUN \
+  apt-get update && apt-get install -y --no-install-recommends \
+      wget git && \
+  MINICONDA="Miniconda3-py310_23.5.2-0-Linux-x86_64.sh" && \
+  wget --quiet https://repo.continuum.io/miniconda/$MINICONDA && \
+  bash $MINICONDA -b -p /miniconda && \
+  rm -f $MINICONDA 
+  
+RUN \
   apt update && apt install --yes --no-install-recommends \
       python3-pip git && \
   \
