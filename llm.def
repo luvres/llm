@@ -28,4 +28,6 @@ From: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
         auto-gptq \
         \
         sentence_transformers \
-        scikit-learn
+        scikit-learn \
+        \
+        python-dotenv
