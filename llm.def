@@ -30,4 +30,8 @@ From: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
         sentence_transformers \
         scikit-learn \
         \
-        python-dotenv
+        python-dotenv \
+        \
+        evaluate \
+        einops \
+        wandb
