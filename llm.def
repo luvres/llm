@@ -1,5 +1,6 @@
 Bootstrap:docker
-From: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
+#From: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
+From: nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04
 
 %post
   apt update && apt install --yes --no-install-recommends python3-pip git curl
@@ -10,8 +11,9 @@ From: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
         jupyter \
         matplotlib
   pip install --no-cache-dir \
-    --extra-index-url https://download.pytorch.org/whl/nightly/cu118 \
-        torch torchvision torchaudio 
+        torch torchvision torchaudio \
+#    --extra-index-url https://download.pytorch.org/whl/nightly/cu118 \
+#        torch torchvision torchaudio 
         # --pre 'torch>=2.1.0dev'
   pip install --no-cache-dir \
         git+https://github.com/huggingface/transformers.git \
